@@ -17,8 +17,12 @@ export default {
 </script>
 
 <style scoped lang="less">
-iframe {
-  height: 500px;
-  width: 450px;
-}
+  iframe {
+    height: 500px;
+    width: 450px;
+  }
+
+  a {
+    text-decoration: none;
+  }
 </style>
