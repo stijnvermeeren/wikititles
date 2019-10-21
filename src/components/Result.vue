@@ -2,9 +2,9 @@
   <div>
     <v-menu open-on-hover top offset-y offset-x>
       <template v-slot:activator="{ on }">
-        <a :href="`https://en.wikipedia.org/wiki/${article}`" v-on="on">{{article}}</a>
+        <a :href="`https://${languageId}.wikipedia.org/wiki/${article}`" v-on="on">{{article}}</a> ({{languageId}})
       </template>
-      <iframe :src="`https://en.m.wikipedia.org/wiki/${article}`"></iframe>
+      <iframe :src="`https://${languageId}.m.wikipedia.org/wiki/${article}`"></iframe>
     </v-menu>
   </div>
 </template>
@@ -12,7 +12,7 @@
 <script>
 export default {
   name: 'Result',
-  props: ['article']
+  props: ['languageId', 'article']
 }
 </script>
 

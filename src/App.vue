@@ -36,9 +36,9 @@
           <div>
             <h2>Results</h2>
             <v-list v-if="results.length">
-              <v-list-item v-for="(result, index) in results" :key="index">
+              <v-list-item v-for="({article, languageId}, index) in results" :key="index">
                 <v-list-item-content>
-                  <result :article="result" />
+                  <result :article="article" :language-id="languageId" />
                 </v-list-item-content>
               </v-list-item>
             </v-list>
