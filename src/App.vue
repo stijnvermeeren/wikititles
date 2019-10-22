@@ -2,11 +2,10 @@
   <div id="app" :class="{searching}">
     <v-app>
       <v-content>
-        <v-container fluid>
+        <div>
           <h1>Search for Wikipedia articles</h1>
-          <v-row>
-            <v-col>
-              <v-text-field
+          <v-container fluid>
+            <v-text-field
                 v-model="query"
                 label="Search for Wikipedia articles by initials or by full regex"
                 placeholder="Query"
@@ -15,24 +14,18 @@
                 hide-details
                 @keyup.enter="search()"
               />
-            </v-col>
-            <v-col>
-              <v-btn @click="search()" :disabled="searching">
-                Search
-              </v-btn>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-radio-group
-                v-model="mode"
-                row
-              >
-                <v-radio label="By initials" value="initials"></v-radio>
-                <v-radio label="Full regex" value="regex"></v-radio>
-              </v-radio-group>
-            </v-col>
-          </v-row>
+            <v-btn @click="search()" :disabled="searching">
+              Search
+            </v-btn>
+            <v-radio-group
+              v-model="mode"
+              row
+            >
+              <v-radio label="By initials" value="initials"></v-radio>
+              <v-radio label="Full regex" value="regex"></v-radio>
+            </v-radio-group>
+            <v-checkbox v-model="caseSensitive" label="Case sensitive" />
+          </v-container>
           <div>
             <h2>Results</h2>
             <v-list v-if="results.length">
@@ -49,7 +42,7 @@
               More than 1000 results. Only the first 1000 results are shown.
             </div>
           </div>
-        </v-container>
+        </div>
       </v-content>
     </v-app>
   </div>
@@ -67,6 +60,7 @@ export default {
     return {
       query: '',
       mode: 'initials',
+      caseSensitive: false,
       results: [],
       searching: false
     }
@@ -85,7 +79,11 @@ export default {
   methods: {
     search() {
       this.searching = true
-      this.axios.get('/api', { params: { regex: this.regex }}).then(({ data }) => {
+      const params = { regex: this.regex }
+      if (this.caseSensitive) {
+        params.caseSensitive = true;
+      }
+      this.axios.get('/api', { params }).then(({ data }) => {
         this.results = data
         this.searching = false
       })

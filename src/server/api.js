@@ -6,9 +6,10 @@ const data = require('../../data/data')
 
 const maxResults = 1000
 
-async function grep(file, regex) {
+async function grep(file, regex, caseSensitive) {
   return new Promise((resolve, reject) => {
-    const grep = spawn('grep', ['-i', regex, file]);
+    const caseInsensitiveFlag = caseSensitive ? [] : ['-i']
+    const grep = spawn('grep', caseInsensitiveFlag.concat([regex, file]));
 
     let results = []
     let error = ''
@@ -41,14 +42,15 @@ async function grep(file, regex) {
 
 router.get('/', async function (req, res, next) {
   const regex = req.query.regex
+  const caseSensitive = !!req.query.caseSensitive
 
-  const promises = data.map(async ({languageId, dataFile}) => {
-    return {
-      languageId,
-      languageResults: await grep(`data/${dataFile}`, regex).catch(error => {
-        throw error
-      })
-    }
+  const promises = data.map(({languageId, dataFile}) => {
+    return grep(`data/${dataFile}`, regex, caseSensitive).then(languageResults => {
+      return {
+        languageId,
+        languageResults
+      }
+    })
   })
 
   await Promise.all(promises).then(results => {
