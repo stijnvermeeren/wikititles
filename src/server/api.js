@@ -43,6 +43,7 @@ async function grep(file, regex, caseSensitive) {
 router.get('/', async function (req, res, next) {
   const regex = req.query.regex
   const caseSensitive = !!req.query.caseSensitive
+  const caseSensitiveResults = !!req.query.caseSensitiveResults
 
   const promises = data.map(({languageId, dataFile}) => {
     return grep(`data/${dataFile}`, regex, caseSensitive).then(languageResults => {
@@ -54,13 +55,30 @@ router.get('/', async function (req, res, next) {
   })
 
   await Promise.all(promises).then(results => {
-    const flattenedResults = results.map(({languageId, languageResults}) => {
-      return languageResults.map(article => {
-        return {languageId, article}
-      })
-    }).flat()
+    const resultMap = new Map()
 
-    res.end(JSON.stringify(flattenedResults.slice(0, maxResults)))
+    function normaliseResult(article) {
+      return caseSensitiveResults ? article : article.toLowerCase()
+    }
+
+    results.forEach(({languageId, languageResults}) => {
+      languageResults.forEach(article => {
+        const key = normaliseResult(article)
+        if (resultMap.has(key)) {
+          const languageIds = resultMap.get(key).languageIds
+          if (!languageIds.includes(languageId)) {
+            resultMap.get(key).languageIds.push(languageId)
+          }
+        } else {
+          resultMap.set(key, {article, languageIds: [languageId]})
+        }
+      })
+    })
+
+    const combinedResults = [...resultMap.entries()].sort().map(item => item[1])
+    console.log(combinedResults)
+
+    res.end(JSON.stringify(combinedResults.slice(0, maxResults)))
   }).catch(next)
 })
 

@@ -24,14 +24,15 @@
               <v-radio label="By initials" value="initials"></v-radio>
               <v-radio label="Full regex" value="regex"></v-radio>
             </v-radio-group>
-            <v-checkbox v-model="caseSensitive" label="Case sensitive" />
+            <v-checkbox v-model="caseSensitive" label="Case sensitive regex" />
+            <v-checkbox v-model="caseSensitiveResults" label="Case sensitive results" />
           </v-container>
           <div>
             <h2>Results</h2>
             <v-list v-if="results.length">
-              <v-list-item v-for="({article, languageId}, index) in results" :key="index">
+              <v-list-item v-for="({article, languageIds}, index) in results" :key="index">
                 <v-list-item-content>
-                  <result :article="article" :language-id="languageId" />
+                  <result :article="article" :language-ids="languageIds" />
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -61,6 +62,7 @@ export default {
       query: '',
       mode: 'initials',
       caseSensitive: false,
+      caseSensitiveResults: false,
       results: [],
       searching: false
     }
@@ -82,6 +84,9 @@ export default {
       const params = { regex: this.regex }
       if (this.caseSensitive) {
         params.caseSensitive = true;
+      }
+      if (this.caseSensitiveResults) {
+        params.caseSensitiveResults = true;
       }
       this.axios.get('/api', { params }).then(({ data }) => {
         this.results = data
