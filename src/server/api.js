@@ -64,19 +64,19 @@ router.get('/', async function (req, res, next) {
     results.forEach(({languageId, languageResults}) => {
       languageResults.forEach(article => {
         const key = normaliseResult(article)
+        const articleData = {
+          languageId,
+          article
+        }
         if (resultMap.has(key)) {
-          const languageIds = resultMap.get(key).languageIds
-          if (!languageIds.includes(languageId)) {
-            resultMap.get(key).languageIds.push(languageId)
-          }
+          resultMap.get(key).articles.push(articleData)
         } else {
-          resultMap.set(key, {article, languageIds: [languageId]})
+          resultMap.set(key, {label: article, articles: [articleData]})
         }
       })
     })
 
     const combinedResults = [...resultMap.entries()].sort().map(item => item[1])
-    console.log(combinedResults)
 
     res.end(JSON.stringify(combinedResults.slice(0, maxResults)))
   }).catch(next)

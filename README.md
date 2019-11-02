@@ -1,4 +1,16 @@
-# wikititles
+# WikiTitles
+
+This tool allows you to search for Wikipedia articles based on the initials (or any regex) of the article title. It is designed to help solve riddles such as the following (from the [AIVD Kerstpuzzel 2018](https://www.aivd.nl/documenten/publicaties/2018/12/11/aivd-kerstpuzzel-2018)):
+
+> Find the name and title that belongs to this table 
+>
+> ```ST
+> BITU        Bi       Bl         CBC     DP      DPMB
+> EGSTHEMAMM  GN       GO         HIAWG   HP      HS
+> IST         IW       J          LLL     MMD     MNS
+> OO          P        R1         R9      RR      SS
+> ST          TCSOBB   WDWDIITR   WHP     WMGGW   YB
+> ```
 
 ## Installation
 

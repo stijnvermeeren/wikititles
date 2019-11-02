@@ -1,11 +1,11 @@
 <template>
   <div>
     <span>
-      {{article}}
+      {{label}}
     </span>
     <span
-      v-for="languageId in languageIds"
-      :key="languageId"
+      v-for="({article, languageId}, index) in articles"
+      :key="index"
       class="language"
     >
       <v-menu open-on-hover top offset-y offset-x>
@@ -21,7 +21,7 @@
 <script>
 export default {
   name: 'Result',
-  props: ['languageIds', 'article']
+  props: ['articles', 'label']
 }
 </script>
 
